@@ -1,0 +1,12 @@
+.isotopeElementContainer{
+  position: absolute;
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+ul.isotope {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}

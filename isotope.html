@@ -1,0 +1,20 @@
+<template name="isotope">
+	<div class="isotopeElementContainer">
+		<div class="isotopeItemSizer"></div>
+		{{#each cursor}}
+			{{> isotopeItem}}
+		{{/each}}
+	</div>
+	
+	<ul class="isotope {{cssClasses}}">
+	</ul>
+</template>
+
+
+<template name="isotopeItem">
+	<div class="isotopeItemContainer">
+		<li data-isotope-item-id="{{id}}" data-isotope-position="{{position}}">
+			{{> Template.dynamic template=partial data=this}}
+		</li>
+	</div>
+</template>
