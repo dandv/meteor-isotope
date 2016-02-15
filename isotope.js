@@ -4,9 +4,15 @@ Template.isotopeItem.helpers({
 	},
 	position: function() {
 		var idMap;
-		idMap = Template.parentData(1).cursor.fetch().map(function(i) {
-			return i._id;
-		});
+		if (Array.isArray(Template.parentData(1).cursor)) {
+			idMap = Template.parentData(1).cursor.map(function(i) {
+				return i._id;
+			});
+		} else {
+			idMap = Template.parentData(1).cursor.fetch().map(function(i) {
+				return i._id;
+			});
+		}
 		return _.indexOf(idMap, this._id);
 	}
 });
@@ -80,34 +86,35 @@ Template.isotope.onRendered(function () {
 	$el.imagesLoaded(function() {
 		return $el.isotope('layout');
 	});
-	if ((this.data.cursor.limit != null) || (this.data.cursor.skip != null)) {
-		return this.data.cursor.observeChanges({
-			addedBefore: function() {
-				return null;
-			},
-			movedBefore: function() {
-				return null;
-			},
-			removed: function(id) {
-				if ($('ul.isotope').attr('data-isotope-initialized')) {
-					var item, selector;
-					selector = "[data-isotope-item-id=" + id + "]";
-					item = $el.find(selector);
-					return $el.isotope('remove', item).isotope('layout');
+	if (!Array.isArray(this.data.cursor)) {
+		if ((this.data.cursor.limit != null) || (this.data.cursor.skip != null)) {
+			return this.data.cursor.observeChanges({
+				addedBefore: function() {
+					return null;
+				},
+				movedBefore: function() {
+					return null;
+				},
+				removed: function(id) {
+					if ($('ul.isotope').attr('data-isotope-initialized')) {
+						var item, selector;
+						selector = "[data-isotope-item-id=" + id + "]";
+						item = $el.find(selector);
+						return $el.isotope('remove', item).isotope('layout');
+					}
 				}
-			}
-		});
-	} else {
-		return this.data.cursor.observe({
-			removed: function(doc) {
-				if ($('ul.isotope').attr('data-isotope-initialized')) {
-					var item, selector;
-					selector = "[data-isotope-item-id=" + doc._id + "]";
-					item = $el.find(selector);
-					return $el.isotope('remove', item).isotope('layout');
+			});
+		} else {
+			return this.data.cursor.observe({
+				removed: function(doc) {
+					if ($('ul.isotope').attr('data-isotope-initialized')) {
+						var item, selector;
+						selector = "[data-isotope-item-id=" + doc._id + "]";
+						item = $el.find(selector);
+						return $el.isotope('remove', item).isotope('layout');
+					}
 				}
-			}
-		});
+			});
+		}
 	}
-
 })
