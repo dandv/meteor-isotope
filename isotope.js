@@ -1,23 +1,15 @@
 Template.isotopeItem.helpers({
 	partial: function() {
-		// console.log({partial:Template.parentData(2).template});
 		return Template.parentData(2).template;
 	},
 	position: function() {
 		var idMap=[];
-		var cursor=Template.parentData(1).cursor;
+		var cursor=prepCursor(Template.parentData(2).cursor);
+		// console.log({cur:cursor});
 		if (cursor) {
-			// if (Array.isArray(cursor)) {
-				for (var c in cursor) {
-					// console.log('jjr');
-					var t=cursor[c].map(function(i) {return i._id;})
-					// console.log({t:t});
-					idMap = idMap.concat(t);
-					// console.log(idMap);
-				}
-			// } else {
-			// 	idMap = idMap.concat(cursor.fetch().map(function(i) {return i._id;}));
-			// }
+			for (var c in cursor) {
+				idMap = idMap.concat(cursor[c].map(function(i) {return i._id;}));
+			}
 		}
 		return _.indexOf(idMap, this._id);
 	}
@@ -70,11 +62,29 @@ Template.isotope.helpers({
 });
 
 Template.isotope.onCreated(function () {
-	if (this.data.cursor) this.data.cursor=prepCursor(this.data.cursor);
+	// if (this.data.cursor) this.data.cursor=prepCursor(this.data.cursor);
 });
 
 
+function reloadIsotope(context) 
+{
+	try {
+		ref2 = $(context.find('.isotopeElementContainer'));
+		for (l = 0, len2 = ref2.length; l < len2; l++) {
+			el = ref2[l];
+			// console.log(el);
+			$el.isotope('insert', el);
+		}
+		$el.imagesLoaded(function() {
+			return $el.isotope('layout');
+		});
+	} catch (e) {
+		
+	}
+}
+
 Template.isotope.onRendered(function () {
+	// console.log('Template.isotope.onRendered')
 	var $el, el, j, k, l, len, len1, len2, masonryOptions, opt, options, ref, ref1, ref2;
 	options = {
 		itemSelector: 'li',
@@ -107,6 +117,7 @@ Template.isotope.onRendered(function () {
 	// console.log({isotope:options});
 	
 	$el.isotope(options);
+	
 	ref2 = $(this.find('.isotopeElementContainer'));
 	for (l = 0, len2 = ref2.length; l < len2; l++) {
 		el = ref2[l];
@@ -118,18 +129,42 @@ Template.isotope.onRendered(function () {
 	$el.imagesLoaded(function() {
 		return $el.isotope('layout');
 	});
-	
-	for (var c in this.data.cursor) {
-		if (!Array.isArray(this.data.cursor[c])) {
-			// console.log({cursor:this.data.cursor[c]});
-			// console.log(this.data.cursor[c] instanceof Mongo.Collection.Cursor);
+	var self=this;
+	var cursor=prepCursor(this.data.cursor);
+	// console.log({cursor:this.data.cursor});
+	for (var c in cursor) {
+		if (cursor[c] instanceof Mongo.Collection.Cursor) {
+			// console.log({cursor:cursor[c]});
+			// console.log(cursor[c] instanceof Mongo.Collection.Cursor);
 		
-			if ((this.data.cursor[c].limit != null) || (this.data.cursor[c].skip != null)) {
-				return this.data.cursor[c].observeChanges({
-					addedBefore: function() {
+			if ((cursor[c].limit != null) || (cursor[c].skip != null)) {
+				return cursor[c].observeChanges({
+					// added(id, fields) {
+					// 	console.log('doc inserted');
+					// },
+					// changed(id, fields) {
+					// 	console.log('doc updated');
+					// },
+					addedBefore: _.throttle(function() {
+						// console.log('addedBefore');
+						// reloadIsotope(self);
+						try {
+							ref2 = $(self.find('.isotopeElementContainer'));
+							for (l = 0, len2 = ref2.length; l < len2; l++) {
+								el = ref2[l];
+								// console.log(el);
+								$el.isotope('insert', el);
+							}
+							$el.imagesLoaded(function() {
+								return $el.isotope('layout');
+							});
+						} catch (e) {
+
+						}
 						return null;
-					},
+					},100),
 					movedBefore: function() {
+						// console.log('movedBefore');
 						return null;
 					},
 					removed: function(id) {
@@ -142,7 +177,29 @@ Template.isotope.onRendered(function () {
 					}
 				});
 			} else {
-				return this.data.cursor[c].observe({
+				return cursor[c].observe({
+					added: _.throttle(function() {
+						// console.log('addedBefore');
+						// reloadIsotope(self);
+						try {
+							ref2 = $(self.find('.isotopeElementContainer'));
+							for (l = 0, len2 = ref2.length; l < len2; l++) {
+								el = ref2[l];
+								// console.log(el);
+								$el.isotope('insert', el);
+							}
+							$el.imagesLoaded(function() {
+								return $el.isotope('layout');
+							});
+						} catch (e) {
+
+						}
+						return null;
+					},100),
+					movedBefore: function() {
+						// console.log('movedBefore');
+						return null;
+					},
 					removed: function(doc) {
 						if ($('ul.isotope').attr('data-isotope-initialized')) {
 							var item, selector;
