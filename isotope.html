@@ -2,7 +2,9 @@
 	<div class="isotopeElementContainer">
 		<div class="isotopeItemSizer"></div>
 		{{#each cursor}}
-			{{> isotopeItem}}
+			{{#each .}}
+				{{> isotopeItem}}
+			{{/each}}
 		{{/each}}
 	</div>
 	

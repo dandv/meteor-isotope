@@ -1,17 +1,23 @@
 Template.isotopeItem.helpers({
 	partial: function() {
-		return Template.parentData(1).template;
+		// console.log({partial:Template.parentData(2).template});
+		return Template.parentData(2).template;
 	},
 	position: function() {
-		var idMap;
-		if (Array.isArray(Template.parentData(1).cursor)) {
-			idMap = Template.parentData(1).cursor.map(function(i) {
-				return i._id;
-			});
-		} else {
-			idMap = Template.parentData(1).cursor.fetch().map(function(i) {
-				return i._id;
-			});
+		var idMap=[];
+		var cursor=Template.parentData(1).cursor;
+		if (cursor) {
+			// if (Array.isArray(cursor)) {
+				for (var c in cursor) {
+					// console.log('jjr');
+					var t=cursor[c].map(function(i) {return i._id;})
+					// console.log({t:t});
+					idMap = idMap.concat(t);
+					// console.log(idMap);
+				}
+			// } else {
+			// 	idMap = idMap.concat(cursor.fetch().map(function(i) {return i._id;}));
+			// }
 		}
 		return _.indexOf(idMap, this._id);
 	}
@@ -32,13 +38,39 @@ Template.isotopeItem.onRendered(function() {
 	}
 })
 
+function prepCursor(cursor) {
+	var result;
+	if (Array.isArray(cursor)) {
+		result=[];
+		for (var c in cursor) {
+			if (Array.isArray(cursor[c]) || cursor[c] instanceof Mongo.Collection.Cursor) {
+				result.push(cursor[c]);
+			} else {
+				result.push([cursor[c]]);
+			}
+		}
+	} else {
+		if (cursor instanceof Mongo.Collection.Cursor) {
+			result=[cursor];
+		} else {
+			result=[[cursor]];
+		}
+	}
+	return result;
+}
+
+
 Template.isotope.helpers({
 	cursor: function() {
-		return this.cursor;
+		return prepCursor(this.cursor);
 	},
 	cssClasses: function() {
 		return this.cssClass;
 	}
+});
+
+Template.isotope.onCreated(function () {
+	if (this.data.cursor) this.data.cursor=prepCursor(this.data.cursor);
 });
 
 
@@ -86,35 +118,41 @@ Template.isotope.onRendered(function () {
 	$el.imagesLoaded(function() {
 		return $el.isotope('layout');
 	});
-	if (!Array.isArray(this.data.cursor)) {
-		if ((this.data.cursor.limit != null) || (this.data.cursor.skip != null)) {
-			return this.data.cursor.observeChanges({
-				addedBefore: function() {
-					return null;
-				},
-				movedBefore: function() {
-					return null;
-				},
-				removed: function(id) {
-					if ($('ul.isotope').attr('data-isotope-initialized')) {
-						var item, selector;
-						selector = "[data-isotope-item-id=" + id + "]";
-						item = $el.find(selector);
-						return $el.isotope('remove', item).isotope('layout');
+	
+	for (var c in this.data.cursor) {
+		if (!Array.isArray(this.data.cursor[c])) {
+			// console.log({cursor:this.data.cursor[c]});
+			// console.log(this.data.cursor[c] instanceof Mongo.Collection.Cursor);
+		
+			if ((this.data.cursor[c].limit != null) || (this.data.cursor[c].skip != null)) {
+				return this.data.cursor[c].observeChanges({
+					addedBefore: function() {
+						return null;
+					},
+					movedBefore: function() {
+						return null;
+					},
+					removed: function(id) {
+						if ($('ul.isotope').attr('data-isotope-initialized')) {
+							var item, selector;
+							selector = "[data-isotope-item-id=" + id + "]";
+							item = $el.find(selector);
+							return $el.isotope('remove', item).isotope('layout');
+						}
 					}
-				}
-			});
-		} else {
-			return this.data.cursor.observe({
-				removed: function(doc) {
-					if ($('ul.isotope').attr('data-isotope-initialized')) {
-						var item, selector;
-						selector = "[data-isotope-item-id=" + doc._id + "]";
-						item = $el.find(selector);
-						return $el.isotope('remove', item).isotope('layout');
+				});
+			} else {
+				return this.data.cursor[c].observe({
+					removed: function(doc) {
+						if ($('ul.isotope').attr('data-isotope-initialized')) {
+							var item, selector;
+							selector = "[data-isotope-item-id=" + doc._id + "]";
+							item = $el.find(selector);
+							return $el.isotope('remove', item).isotope('layout');
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 })

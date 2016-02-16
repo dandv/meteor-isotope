@@ -1,7 +1,7 @@
 Package.describe({
   name: 'jorisroling:isotope',
   summary: 'Meteor implementation of Isotope',
-  version: '1.0.3',
+  version: '1.0.4',
   git: 'https://github.com/jorisroling/meteor-isotope.git'
 });
 
