@@ -131,21 +131,21 @@ Template.isotope.onRendered(function () {
 	});
 	var self=this;
 	var cursor=prepCursor(this.data.cursor);
-	// console.log({cursor:this.data.cursor});
-	for (var c in cursor) {
-		if (cursor[c] instanceof Mongo.Collection.Cursor) {
-			// console.log({cursor:cursor[c]});
-			// console.log(cursor[c] instanceof Mongo.Collection.Cursor);
+	// console.log({cursor:cursor});
+	for (var ci in cursor) {
+		// console.log({cursor:cursor[ci]});
+		// console.log(cursor[ci] instanceof Mongo.Collection.Cursor);
+		if (cursor[ci] instanceof Mongo.Collection.Cursor) {
 		
-			if ((cursor[c].limit != null) || (cursor[c].skip != null)) {
-				return cursor[c].observeChanges({
+			if ((cursor[ci].limit != null) || (cursor[ci].skip != null)) {
+				/*return */cursor[ci].observeChanges({
 					// added(id, fields) {
 					// 	console.log('doc inserted');
 					// },
 					// changed(id, fields) {
 					// 	console.log('doc updated');
 					// },
-					addedBefore: _.throttle(function() {
+					addedBefore: /*_.throttle(*/function() {
 						// console.log('addedBefore');
 						// reloadIsotope(self);
 						try {
@@ -162,12 +162,13 @@ Template.isotope.onRendered(function () {
 
 						}
 						return null;
-					},100),
+					}/*,100)*/,
 					movedBefore: function() {
 						// console.log('movedBefore');
 						return null;
 					},
 					removed: function(id) {
+						// console.log('removed: '+id);
 						if ($('ul.isotope').attr('data-isotope-initialized')) {
 							var item, selector;
 							selector = "[data-isotope-item-id=" + id + "]";
@@ -177,8 +178,8 @@ Template.isotope.onRendered(function () {
 					}
 				});
 			} else {
-				return cursor[c].observe({
-					added: _.throttle(function() {
+				/*return */cursor[ci].observe({
+					added: /*_.throttle(*/function() {
 						// console.log('addedBefore');
 						// reloadIsotope(self);
 						try {
@@ -195,12 +196,13 @@ Template.isotope.onRendered(function () {
 
 						}
 						return null;
-					},100),
+					}/*,100)*/,
 					movedBefore: function() {
 						// console.log('movedBefore');
 						return null;
 					},
 					removed: function(doc) {
+						// console.log('removed: '+doc._id);
 						if ($('ul.isotope').attr('data-isotope-initialized')) {
 							var item, selector;
 							selector = "[data-isotope-item-id=" + doc._id + "]";
