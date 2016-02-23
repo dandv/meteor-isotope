@@ -1,3 +1,21 @@
+function grabId(id)
+{
+	// console.log(id);
+	if (typeof id=='object' && id.id) id=id.id;
+	if (typeof id=='string') {
+			//ObjectID("56cb3263d4d84c1558605467")
+		var myRegexp=/^ObjectID\("(.*?)"\)$/
+		var match = myRegexp.exec(id);
+		if (match && match.length>1 && match[1]) {
+			return match[1];
+		}
+	} else if (typeof id=='object' && id._str) {
+		return id._str;
+	}
+	return id;
+}
+
+
 Template.isotopeItem.helpers({
 	partial: function() {
 		return Template.parentData(2).template;
@@ -12,7 +30,10 @@ Template.isotopeItem.helpers({
 			}
 		}
 		return _.indexOf(idMap, this._id);
-	}
+	},
+	id: function() {
+		return grabId(this._id);
+	},
 });
 
 Template.isotopeItem.onRendered(function() {
@@ -22,9 +43,11 @@ Template.isotopeItem.onRendered(function() {
 		li = $(this.find('li'));
 		$ul.isotope('insert', li);
 		setTimeout(function() {
+			// console.log('updateSortData')
 			return $ul.isotope('updateSortData').isotope();
 		}, 100);
 		return li.imagesLoaded(function() {
+			// console.log('layout')
 			return $ul.isotope('layout');
 		});
 	}
@@ -75,6 +98,10 @@ function reloadIsotope(context)
 			// console.log(el);
 			$el.isotope('insert', el);
 		}
+		setTimeout(function() {
+			// console.log('updateSortData')
+			return $el.isotope('updateSortData').isotope();
+		}, 100);
 		$el.imagesLoaded(function() {
 			return $el.isotope('layout');
 		});
@@ -155,6 +182,10 @@ Template.isotope.onRendered(function () {
 								// console.log(el);
 								$el.isotope('insert', el);
 							}
+							setTimeout(function() {
+								// console.log('updateSortData')
+								return $el.isotope('updateSortData').isotope();
+							}, 100);
 							$el.imagesLoaded(function() {
 								return $el.isotope('layout');
 							});
@@ -189,6 +220,10 @@ Template.isotope.onRendered(function () {
 								// console.log(el);
 								$el.isotope('insert', el);
 							}
+							setTimeout(function() {
+								// console.log('updateSortData')
+								return $el.isotope('updateSortData').isotope();
+							}, 100);
 							$el.imagesLoaded(function() {
 								return $el.isotope('layout');
 							});
