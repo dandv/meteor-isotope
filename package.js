@@ -1,7 +1,7 @@
 Package.describe({
   name: 'jorisroling:isotope',
   summary: 'Meteor implementation of Isotope',
-  version: '1.0.9',
+  version: '1.0.10',
   git: 'https://github.com/jorisroling/meteor-isotope.git'
 });
 
@@ -21,4 +21,5 @@ Package.onUse(function(api) {
       'isotope.css'
     ], 'client'
   );
+  api.export('isotope');
 });

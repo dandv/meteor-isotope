@@ -1,3 +1,5 @@
+isotope={options:{}};
+
 function grabId(id)
 {
 	// console.log(id);
@@ -34,6 +36,9 @@ Template.isotopeItem.helpers({
 	id: function() {
 		return grabId(this._id);
 	},
+	itemClass:function() {
+		return isotope.options.itemClass;//col-lg-3 col-md-4 col-sm-4 col-xs-12 isotopeBlock
+	}
 });
 
 Template.isotopeItem.onRendered(function() {
