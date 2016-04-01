@@ -211,7 +211,12 @@ Template.isotope.onRendered(function () {
 							item = $el.find(selector);
 							return $el.isotope('remove', item).isotope('layout');
 						}
-					}
+					},
+		            changed: function ( id, fields ) {
+		                Tracker.afterFlush( function () {
+		                    $( 'ul.isotope' ).isotope();
+		                } );
+		            },
 				});
 			} else {
 				/*return */cursor[ci].observe({
@@ -249,7 +254,12 @@ Template.isotope.onRendered(function () {
 							item = $el.find(selector);
 							return $el.isotope('remove', item).isotope('layout');
 						}
-					}
+					},
+		            changed: function ( id, fields ) {
+		                Tracker.afterFlush( function () {
+		                    $( 'ul.isotope' ).isotope();
+		                } );
+		            }
 				});
 			}
 		}
