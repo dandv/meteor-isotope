@@ -15,7 +15,7 @@
 
 <template name="isotopeItem">
 	<div class="isotopeItemContainer">
-		<li data-isotope-item-id="{{id}}" data-isotope-position="{{position}}" class="{{itemClass}}">
+		<li data-isotope-item-id="{{id}}" data-isotope-position="{{position}}" class="isotopeItem {{itemClass}}">
 			{{> Template.dynamic template=partial data=this}}
 		</li>
 	</div>
