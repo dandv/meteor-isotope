@@ -2,7 +2,7 @@
 
 ### What does it do ?
 
-This plugin will create a reactive [Isotope](http://isotope.metafizzy.co) masonry for you. If you update or filter your collection/cursor it will be automatically reflected in the layout. 
+This plugin will create a reactive [Isotope](http://isotope.metafizzy.co) masonry for you. If you update or filter your collection/cursor it will be automatically reflected in the layout.
 
 ### Live demo
 This plugin is based on the work of [smeevil](https://github.com/smeevil/responsive-block-grid/)
@@ -22,6 +22,9 @@ The most basic option to use it in your templates is as follows :
 {{> isotope cursor=myCursor template='myTemplate'}}
 ~~~
 
+Note: myCursor can also be an array of [cursorA, cursorB].
+
+
 To add classes to the generated &lt;ul/&gt; you can pass them using the cssClass option like so :
 ~~~js
 {{> isotope cursor=myCursor template='myTemplate' cssClass='small-block-grid-3 medium-block-grid-6'}}
@@ -37,5 +40,7 @@ You can pass the following isotope options to the template:  transitionDuration,
 ~~~js
 {{> isotope cursor=myCursor template='myTemplate' transitionDuration='1.5s' layoutMode='fitRows' gutter=20 columnWidth='.gutter-width'}}
 ~~~
+
+Alternatively, you can pass optionsForIsotope=optionsObject, where optionsObject can define any option possible in Isotope.
 
 Licensed under the WTFPL License. See the `LICENSE` file for details.
