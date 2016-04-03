@@ -37,7 +37,7 @@ Template.isotopeItem.helpers({
 		return grabId(this._id);
 	},
 	itemClass:function() {
-		return isotope.options.itemClass;//col-lg-3 col-md-4 col-sm-4 col-xs-12 isotopeBlock
+		return isotope.options.itemClass || Template.parentData(2).itemClass;// example: 'col-lg-3 col-md-4 col-sm-6 col-xs-12 isotopeBlock';
 	}
 });
 
