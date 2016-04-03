@@ -148,6 +148,9 @@ Template.isotope.onRendered(function () {
 	}
 	// console.log({isotope:options});
 	
+	// This allows the user to set any and override any options.
+	_.extend( options, this.data.optionsForIsotope );
+
 	$el.isotope(options);
 	
 	ref2 = $(this.find('.isotopeElementContainer'));
