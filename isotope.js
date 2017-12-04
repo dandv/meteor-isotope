@@ -1,9 +1,9 @@
-isotope={options:{}};
+const isotope = { options: {} };
 
-function grabId(id)
-{
+function grabId(id) {
 	// console.log(id);
-	if (typeof id=='object' && id.id) id=id.id;
+  if (typeof id=='object' && id.id) id=id.id;
+
 	if (typeof id=='string') {
 			//ObjectID("56cb3263d4d84c1558605467")
 		var myRegexp=/^ObjectID\("(.*?)"\)$/
@@ -38,7 +38,63 @@ Template.isotopeItem.helpers({
 	},
 	itemClass:function() {
 		return isotope.options.itemClass || Template.parentData(2).itemClass;// example: 'col-lg-3 col-md-4 col-sm-6 col-xs-12 isotopeBlock';
-	}
+  },
+
+  sortFields: function() {
+    const {optionsForIsotope} = Template.parentData(2);
+    if (!optionsForIsotope)  return {};
+
+    const {sortFields} = optionsForIsotope;
+    if (!sortFields || !sortFields.length)  return {};
+
+    const dataAttributes = sortFields.map(sF => ({["data-isotope-" + sF.toLowerCase()]: this[sF]}));
+
+    const data = dataAttributes.reduce((a, b) => ({...a, ...b}), {})
+
+    return data;
+  },
+
+  filterFields: function() {
+    const {optionsForIsotope} = Template.parentData(2);
+    if (!optionsForIsotope)  return {};
+
+    const {filterFields} = optionsForIsotope;
+    if (!filterFields || !filterFields.length)  return {};
+
+    const dataAttributes = filterFields.join(" ");
+
+    return dataAttributes;
+  },
+
+  sortFunctions: function() {
+    const doc = this;
+
+    const {optionsForIsotope} = Template.parentData(2);
+    if (!optionsForIsotope)  return {};
+
+    const {sortFunctions} = optionsForIsotope;
+    if (!sortFunctions || !sortFunctions.length)  return {};
+
+    const dataAttributes = sortFunctions.map(function(sF){return sF(doc)});
+
+    const data = dataAttributes.reduce((a, b) => ({...a, ...b}), {})
+
+    return data;
+  },
+
+  filterFunctions: function name() {
+    const doc = this;
+
+    const {optionsForIsotope} = Template.parentData(2);
+    if (!optionsForIsotope)  return {};
+
+    const {filterFunctions} = optionsForIsotope;
+    if (!filterFunctions || !filterFunctions.length)  return '';
+
+    const classes = filterFunctions.map(fF => fF(doc)).join(' ');
+
+    return classes;
+  },
 });
 
 Template.isotopeItem.onRendered(function() {
@@ -86,7 +142,10 @@ Template.isotope.helpers({
 	},
 	cssClasses: function() {
 		return this.cssClass;
-	}
+  },
+  optionsForIsotope: function(){
+    return Template.instance().data.optionsForIsotope;
+  }
 });
 
 Template.isotope.onCreated(function () {
@@ -94,7 +153,7 @@ Template.isotope.onCreated(function () {
 });
 
 
-function reloadIsotope(context) 
+function reloadIsotope(context)
 {
 	try {
 		ref2 = $(context.find('.isotopeElementContainer'));
@@ -111,7 +170,7 @@ function reloadIsotope(context)
 			return $el.isotope('layout');
 		});
 	} catch (e) {
-		
+
 	}
 }
 
@@ -126,7 +185,7 @@ Template.isotope.onRendered(function () {
 			isotopePosition: '[data-isotope-position] parseInt'
 		}
 	};
-	
+
 	ref = ['layoutMode', 'transitionDuration'];
 	for (j = 0, len = ref.length; j < len; j++) {
 		opt = ref[j];
@@ -147,12 +206,12 @@ Template.isotope.onRendered(function () {
 		options.masonry = masonryOptions;
 	}
 	// console.log({isotope:options});
-	
+
 	// This allows the user to set any and override any options.
 	_.extend( options, this.data.optionsForIsotope );
 
 	$el.isotope(options);
-	
+
 	ref2 = $(this.find('.isotopeElementContainer'));
 	for (l = 0, len2 = ref2.length; l < len2; l++) {
 		el = ref2[l];
@@ -171,7 +230,7 @@ Template.isotope.onRendered(function () {
 		// console.log({cursor:cursor[ci]});
 		// console.log(cursor[ci] instanceof Mongo.Collection.Cursor);
 		if (cursor[ci] instanceof Mongo.Collection.Cursor) {
-		
+
 			if ((cursor[ci].limit != null) || (cursor[ci].skip != null)) {
 				/*return */cursor[ci].observeChanges({
 					// added(id, fields) {
