@@ -1,5 +1,5 @@
 Package.describe({
-  name: 'jorisroling:isotope',
+  name: 'sembly:isotope',
   summary: 'Meteor implementation of Isotope',
   version: '1.0.14',
   git: 'https://github.com/jorisroling/meteor-isotope.git'
