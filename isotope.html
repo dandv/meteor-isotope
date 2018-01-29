@@ -1,22 +1,23 @@
 <template name="isotope">
-	<div class="isotopeElementContainer">
-		<div class="isotopeItemSizer"></div>
-		{{#each cursor}}
-			{{#each .}}
-				{{> isotopeItem}}
-			{{/each}}
-		{{/each}}
-	</div>
-	
-	<ul class="isotope {{cssClasses}}">
-	</ul>
+  <div class="isotopeElementContainer">
+    <div class="isotopeItemSizer"></div>
+    {{#each cursor}}
+      {{#each .}}
+        {{> isotopeItem }}
+      {{/each}}
+    {{/each}}
+  </div>
+
+  <ul class="isotope {{cssClasses}}">
+  </ul>
 </template>
 
 
 <template name="isotopeItem">
-	<div class="isotopeItemContainer">
-		<li data-isotope-item-id="{{id}}" data-isotope-position="{{position}}" class="isotopeItem {{itemClass}}">
-			{{> Template.dynamic template=partial data=this}}
-		</li>
-	</div>
+  <div class="isotopeItemContainer">
+
+    <li data-isotope-item-id="{{id}}" {{sortFields}} {{sortFunctions}} data-isotope-position="{{position}}" class="isotopeItem {{itemClass}} {{filterFields}} {{filterFunctions}}">
+      {{> Template.dynamic template=partial data=this}}
+    </li>
+  </div>
 </template>
