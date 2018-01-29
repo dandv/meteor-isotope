@@ -280,11 +280,9 @@ Template.isotope.onRendered(function () {
               let item,
                 selector;
               selector = `[data-isotope-item-id=${id}]`;
+              if (!$el.data('isotope')) return;
               item = () => $el.find(selector);
-
               $el.isotope('remove', item()).isotope('layout');
-
-              console.log(item.length);
             }
           },
           changed(id, fields) {
